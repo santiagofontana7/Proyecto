@@ -93,8 +93,8 @@ function create ()
             this.y -= this.speed * delta;
             if (this.y < reach)
             {
-                this.setActive(false);
-                this.setVisible(false);
+                this.destroy();
+                //this.setVisible(false);
             }
         }
 
