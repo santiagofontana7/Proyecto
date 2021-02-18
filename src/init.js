@@ -7,9 +7,9 @@ var config = {
     physics: {
         default: "arcade",
         arcade:{
-            gravity: {
+            /*gravity: {
                 y:500
-            }
+            }*/
         }
     },
     scene: {
@@ -33,6 +33,7 @@ var cursors;
 var lastFired = 0;
 var reach;
 var enemies;
+var collision;
 
 var ENEMY_SPEED = 1/10000;
 
@@ -52,6 +53,7 @@ function preload() {
     this.load.image('bullet', 'assets/Bullet3.png');
     this.load.image("plane", "./assets/avion_1.png");
     this.load.image("bulletTorret", "./assets/bullet.png");
+    this.load.image("explosionPlane","./assets/explosion2.png");
 }
 
 var Enemy = new Phaser.Class({
@@ -280,17 +282,31 @@ function create() {
     
     bullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
 
-    bullets2 = this.add.group({ classType: BulletTorret, runChildUpdate: true });
+    bullets2 = this.physics.add.group({ classType: BulletTorret, runChildUpdate: true });
 
-    plane=new Plane({scene:this,x:game.config.width/2,y:game.config.height/2});
+    /*plane=new Plane({scene:this,x:game.config.width/2,y:game.config.height/2});
     var largo = 50;
     var ancho = largo * plane.height / plane.width;
     plane.displayWidth = largo;
-    plane.displayHeight = ancho;
+    plane.displayHeight = ancho;*/
+    plane= this.physics.add.image(game.config.width/2,game.config.height/2,"plane");
+    plane.setScale(0.1);
+
+    //Segundo avion y explosion
+
+    /*plane2 = this.physics.add.image(game.config.width/2,250,"plane");
+    plane2.setScale(0.1);
+    plane2.angle= 180;
+    collision = this.physics.add.image(game.config.width/2,250,"explosionPlane");
+    collision.setScale(0.1);
+    collision.setVisible(false);*/
     
     this.nextEnemy = 0;
     
     this.physics.add.overlap(enemies, bullets, damageEnemy);
+    this.physics.add.overlap(bullets2,plane,torretPlane);
+    //this.physics.add.overlap(plane,plane2,collisionPlane);
+    //console.log();
     
     cursors = this.input.keyboard.createCursorKeys();
 
@@ -312,6 +328,29 @@ function damageEnemy(enemy, bullet) {
         enemy.receiveDamage(BULLET_DAMAGE);
     }
 }
+// avion recibe disparos torretas 
+function  torretPlane(plane,bullets2){
+
+    if (plane.active === true && bullets2.active === true) {
+        // we remove the bullet right away
+        bullets2.destroy();
+
+    }
+}
+// explosion aviones solucionar problema de torretas(siguen disparando luego que la imagen desaparece)
+function collisionPlane()
+    {   if (plane.active === true && plane2.active === true)
+        {
+            plane.destroy();
+            plane2.destroy();
+            collision.setVisible(true);
+            setTimeout("collision.setVisible(false)",150)
+            //collision.setVisible(false);
+    
+        }
+       
+        //alert("Choque aviones");
+    }
 
 function drawLines(graphics) {
     graphics.lineStyle(1, 0x0000ff, 0.8);
