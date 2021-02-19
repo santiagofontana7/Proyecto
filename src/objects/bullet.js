@@ -11,12 +11,17 @@ var Bullet = new Phaser.Class({
          this.speed = Phaser.Math.GetSpeed(400, 1);
     },
 
-    fire: function (x, y)
+    fire: function (x, y, angle)
     {
         this.setPosition(x, y - 20);
 
          this.setActive(true);
          this.setVisible(true);
+
+         this.setRotation(angle);
+
+            this.dx = Math.cos(angle);
+            this.dy = Math.sin(angle);
     
     },
 
@@ -102,7 +107,7 @@ function addBullet(x, y) {
 
 function addBulletTorret(x, y, angle) {
     
-    var bullet = bullets2.get();
+    var bullet = bulletsTurret.get();
     
     if (bullet)
     {
@@ -110,11 +115,11 @@ function addBulletTorret(x, y, angle) {
     }
 }
 
-function  torretPlane(plane,bullets2){
+function  torretPlane(plane,bullet){
 
-    if (plane.active === true && bullets2.active === true) {
-        // we remove the bullet right away
-        bullets2.destroy();
+    if (plane.active === true && bullet.active === true) {
+        bullet.destroy();
+        plane.receiveDamage(BULLET_DAMAGE);
 
     }
 }

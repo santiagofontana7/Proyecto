@@ -1,20 +1,20 @@
-var Turret = new Phaser.Class({
+var Tower = new Phaser.Class({
 
     Extends: Phaser.GameObjects.Image,
 
     initialize:
 
-    function Turret (scene)
+    function Tower (scene)
     {
-        Phaser.GameObjects.Image.call(this, scene, 0, 0, 'sprites', 'turret');
+        Phaser.GameObjects.Image.call(this, scene, 0, 0, 'spritesBase', 'tower');
         this.nextTic = 0;
     },
     place: function(i, j) {            
         this.y = i ;
         this.x = j ;
         this.setActive(true);
-        this.setVisible(true);
-        this.setScale(0.5);       
+        this.setVisible(true);     
+        this.setScale(0.3);  
     },
     fire: function() {
         if(plane.scene)
@@ -25,7 +25,7 @@ var Turret = new Phaser.Class({
                 addBulletTorret(this.x, this.y, angle);
             }
             
-            this.angle = (angle + Math.PI/2) * Phaser.Math.RAD_TO_DEG;
+            //this.angle = (angle + Math.PI/2) * Phaser.Math.RAD_TO_DEG;
         }
     },
     update: function (time, delta)
@@ -36,18 +36,3 @@ var Turret = new Phaser.Class({
         }
     }
 });
-
-function canPlaceTurret(i, j) {
-    //return map[i][j] === 0;
-    return true;
-}
-
-function placeTurret(i,j) {
-    if(canPlaceTurret(i, j)) {
-        var turret = turrets.get();
-        if (turret)
-        {
-            turret.place(i, j);
-        }   
-    }
-}

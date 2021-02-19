@@ -16,7 +16,7 @@ var Plane = new Phaser.Class({
     {
         Phaser.GameObjects.Image.call(this, scene, 0, 0, 'sprites', 'plane');
 
-        this.hp = 0;
+        this.hp = 100;
     },
     place: function(i, j) {            
         this.y = i ;
@@ -29,8 +29,7 @@ var Plane = new Phaser.Class({
         
         // if hp drops below 0 we deactivate this enemy
         if(this.hp <= 0) {
-            this.setActive(false);
-            this.setVisible(false);      
+            this.destroy();     
         }
     },
     update: function (time, delta)
