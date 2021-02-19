@@ -35,3 +35,18 @@ var Turret = new Phaser.Class({
         }
     }
 });
+
+function canPlaceTurret(i, j) {
+    //return map[i][j] === 0;
+    return true;
+}
+
+function placeTurret(i,j) {
+    if(canPlaceTurret(i, j)) {
+        var turret = turrets.get();
+        if (turret)
+        {
+            turret.place(i, j);
+        }   
+    }
+}

@@ -123,42 +123,6 @@ function create() {
 
     speed = Phaser.Math.GetSpeed(100, 1);
 }
-
-function damageEnemy(enemy, bullet) {  
-    // only if both enemy and bullet are alive
-    if (enemy.active === true && bullet.active === true) {
-        // we remove the bullet right away
-        bullet.destroy();
-        
-        
-        // decrease the enemy hp with BULLET_DAMAGE
-        enemy.receiveDamage(BULLET_DAMAGE);
-    }
-}
-// avion recibe disparos torretas 
-function  torretPlane(plane,bullets2){
-
-    if (plane.active === true && bullets2.active === true) {
-        // we remove the bullet right away
-        bullets2.destroy();
-
-    }
-}
-// explosion aviones solucionar problema de torretas(siguen disparando luego que la imagen desaparece)
-function collisionPlane()
-    {   if (plane.active === true && plane2.active === true)
-        {
-            plane.destroy();
-            plane2.destroy();
-            collision.setVisible(true);
-            setTimeout("collision.setVisible(false)",150)
-            //collision.setVisible(false);
-    
-        }
-       
-        //alert("Choque aviones");
-    }
-
 function drawLines(graphics) {
     graphics.lineStyle(1, 0x0000ff, 0.8);
     for(var i = 0; i < 8; i++) {
@@ -217,38 +181,5 @@ function update(time, delta) {
 
             this.nextEnemy = time + 2000;
         }       
-    }
-}
-
-function canPlaceTurret(i, j) {
-    //return map[i][j] === 0;
-    return true;
-}
-
-function placeTurret(i,j) {
-    if(canPlaceTurret(i, j)) {
-        var turret = turrets.get();
-        if (turret)
-        {
-            turret.place(i, j);
-        }   
-    }
-}
-
-function addBullet(x, y) {
-    var bullet = bullets.get();
-    if (bullet)
-    {
-        bullet.fire(x, y);
-    }
-}
-
-function addBulletTorret(x, y, angle) {
-    
-    var bullet = bullets2.get();
-    
-    if (bullet)
-    {
-        bullet.fireTorret(x, y,angle);
     }
 }

@@ -54,3 +54,15 @@ for(var i = 0; i < enemyUnits.length; i++) {
 }
 return false;
 }
+
+function damageEnemy(enemy, bullet) {  
+    // only if both enemy and bullet are alive
+    if (enemy.active === true && bullet.active === true) {
+        // we remove the bullet right away
+        bullet.destroy();
+        
+        
+        // decrease the enemy hp with BULLET_DAMAGE
+        enemy.receiveDamage(BULLET_DAMAGE);
+    }
+}

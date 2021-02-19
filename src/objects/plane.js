@@ -48,3 +48,18 @@ var Plane = new Phaser.Class({
     }
 
 });
+
+// explosion aviones solucionar problema de torretas(siguen disparando luego que la imagen desaparece)
+function collisionPlane()
+    {   if (plane.active === true && plane2.active === true)
+        {
+            plane.destroy();
+            plane2.destroy();
+            collision.setVisible(true);
+            setTimeout("collision.setVisible(false)",150)
+            //collision.setVisible(false);
+    
+        }
+       
+        //alert("Choque aviones");
+    }

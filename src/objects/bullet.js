@@ -91,3 +91,30 @@ var BulletTorret = new Phaser.Class({
         }
 
 });
+
+function addBullet(x, y) {
+    var bullet = bullets.get();
+    if (bullet)
+    {
+        bullet.fire(x, y);
+    }
+}
+
+function addBulletTorret(x, y, angle) {
+    
+    var bullet = bullets2.get();
+    
+    if (bullet)
+    {
+        bullet.fireTorret(x, y,angle);
+    }
+}
+
+function  torretPlane(plane,bullets2){
+
+    if (plane.active === true && bullets2.active === true) {
+        // we remove the bullet right away
+        bullets2.destroy();
+
+    }
+}
