@@ -55,203 +55,6 @@ function preload() {
     this.load.image("bulletTorret", "./assets/bullet.png");
     this.load.image("explosionPlane","./assets/explosion2.png");
 }
-
-var Enemy = new Phaser.Class({
-
-        Extends: Phaser.GameObjects.Image,
-
-        initialize:
-
-        function Enemy (scene)
-        {
-            Phaser.GameObjects.Image.call(this, scene, 0, 0, 'sprites', 'enemy');
-
-            this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
-            this.hp = 0;
-        },
-
-        startOnPath: function ()
-        {
-            this.follower.t = 0;
-            this.hp = 100;
-            
-            path.getPoint(this.follower.t, this.follower.vec);
-            
-            this.setPosition(this.follower.vec.x, this.follower.vec.y);            
-        },
-        receiveDamage: function(damage) {
-            this.hp -= damage;           
-            
-            // if hp drops below 0 we deactivate this enemy
-            if(this.hp <= 0) {
-                this.setActive(false);
-                this.setVisible(false);      
-            }
-        },
-        update: function (time, delta)
-        {
-            this.follower.t += ENEMY_SPEED * delta;
-            path.getPoint(this.follower.t, this.follower.vec);
-            
-            this.setPosition(this.follower.vec.x, this.follower.vec.y);
-
-            if (this.follower.t >= 1)
-            {
-                this.setActive(false);
-                this.setVisible(false);
-            }
-        }
-
-});
-
-function getEnemy(x, y, distance) {
-    var enemyUnits = enemies.getChildren();
-    for(var i = 0; i < enemyUnits.length; i++) {       
-        if(enemyUnits[i].active && Phaser.Math.Distance.Between(x, y, enemyUnits[i].x, enemyUnits[i].y) < distance)
-            return enemyUnits[i];
-    }
-    return false;
-} 
-
-var Turret = new Phaser.Class({
-
-        Extends: Phaser.GameObjects.Image,
-
-        initialize:
-
-        function Turret (scene)
-        {
-            Phaser.GameObjects.Image.call(this, scene, 0, 0, 'sprites', 'turret');
-            this.nextTic = 0;
-        },
-        place: function(i, j) {            
-            this.y = i ;
-            this.x = j ;
-            this.setActive(true);
-            this.setVisible(true);
-            // map[i][j] = 1;            
-        },
-        fire: function() {
-            if(plane != null)
-            {
-                var angle = Phaser.Math.Angle.Between(this.x, this.y, plane.x, plane.y);
-                if(Phaser.Math.Distance.Between(this.x, this.y, plane.x, plane.y) < 200)
-                {
-                    addBulletTorret(this.x, this.y, angle);
-                }
-                
-                this.angle = (angle + Math.PI/2) * Phaser.Math.RAD_TO_DEG;
-            }
-            // var enemy = getEnemy(this.x, this.y, 200);
-            // if(enemy) {
-            //     var angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
-            //     addBullet(this.x, this.y, angle);
-            //     this.angle = (angle + Math.PI/2) * Phaser.Math.RAD_TO_DEG;
-            // }
-        },
-        update: function (time, delta)
-        {
-            if(time > this.nextTic) {
-                this.fire();
-                this.nextTic = time + 1500;
-            }
-        }
-});
-    
-var Bullet = new Phaser.Class({
-
-        Extends: Phaser.GameObjects.Image,
-
-        initialize:
-
-        function Bullet (scene)
-        {
-            Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
- 
-             this.speed = Phaser.Math.GetSpeed(400, 1);
-        },
-
-        fire: function (x, y)
-        {
-            this.setPosition(x, y - 20);
- 
-             this.setActive(true);
-             this.setVisible(true);
-        
-        },
-
-        update: function (time, delta)
-        {
-            this.y -= this.speed * delta;
-            if (this.y < reach)
-            {
-                this.destroy();
-                //this.setVisible(false);
-            }
-
-            // this.lifespan -= delta;
-
-            // this.x += this.dx * (this.speed * delta);
-            // this.y += this.dy * (this.speed * delta);
-
-            // if (this.lifespan <= 0)
-            // {
-            //     this.setActive(false);
-            //     this.setVisible(false);
-            // }
-        }
-
-    });
-
-var BulletTorret = new Phaser.Class({
-
-    Extends: Phaser.GameObjects.Image,
-
-        initialize:
-
-        function Bullet (scene)
-        {
-            Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bulletTorret');
-
-            this.incX = 0;
-            this.incY = 0;
-            this.lifespan = 0;
-
-            this.speed = Phaser.Math.GetSpeed(600, 1);
-        },
-
-        fireTorret: function (x, y, angle)
-        {
-            this.setActive(true);
-            this.setVisible(true);
-            //  Bullets fire from the middle of the screen to the given x/y
-            this.setPosition(x, y);
-            
-        //  we don't need to rotate the bullets as they are round
-        //    this.setRotation(angle);
-
-            this.dx = Math.cos(angle);
-            this.dy = Math.sin(angle);
-
-            this.lifespan = 1000;
-        },
-
-        update: function (time, delta)
-        {
-            this.lifespan -= delta;
-
-            this.x += this.dx * (this.speed * delta);
-            this.y += this.dy * (this.speed * delta);
-
-            if (this.lifespan <= 0)
-            {
-                this.setActive(false);
-                this.setVisible(false);
-            }
-        }
-
-});
-
  
 function create() {
 
@@ -289,8 +92,12 @@ function create() {
     var ancho = largo * plane.height / plane.width;
     plane.displayWidth = largo;
     plane.displayHeight = ancho;*/
-    plane= this.physics.add.image(game.config.width/2,game.config.height/2,"plane");
-    plane.setScale(0.1);
+    // plane= this.physics.add.image(game.config.width/2,game.config.height/2,"plane");
+    // plane.setScale(0.1);
+
+    plane = this.add.group({ classType: Plane, runChildUpdate: true });
+    var myPlane = plane.get();
+    myPlane.place(300,400);
 
     //Segundo avion y explosion
 
@@ -304,7 +111,7 @@ function create() {
     this.nextEnemy = 0;
     
     this.physics.add.overlap(enemies, bullets, damageEnemy);
-    this.physics.add.overlap(bullets2,plane,torretPlane);
+    //this.physics.add.overlap(bullets2,plane,torretPlane);
     //this.physics.add.overlap(plane,plane2,collisionPlane);
     //console.log();
     
