@@ -27,20 +27,16 @@ var Plane = new Phaser.Class({
     emptyTank() {
         var i = 1;
         this.startCrash(i);
-
-        //this.destroy();
     },
     startCrash(i) {
         setTimeout(function () {
             i++;
-            if (i < 6) {
-                plane.displayWidth = plane.displayWidth * 0.75
-                plane.displayHeight = plane.displayHeight * 0.75
+            if (i < 25) {
+                plane.displayWidth = plane.displayWidth * 0.95;
+                plane.displayHeight = plane.displayHeight * 0.95;
                 plane.startCrash(i);
             }
-            else {
-                plane.destroy();
-            }
+            setTimeout("plane.destroy()", 250)
         }, 2000)
     },
     fire: function (time) {
@@ -74,22 +70,15 @@ var Plane = new Phaser.Class({
         }
     },
     update: function (time, delta) {
-        if (this.fuel < 0) {
-            this.emptyTank();
-        }
-        // this.follower.t += ENEMY_SPEED * delta;
-        // path.getPoint(this.follower.t, this.follower.vec);
 
-        // this.setPosition(this.follower.vec.x, this.follower.vec.y);
-
-        // if (this.follower.t >= 1)
-        // {
-        //     this.setActive(false);
-        //     this.setVisible(false);
-        // }
     },
     consumeFuel: function () {
-        //this.fuel -= 0.1;
+        if (this.fuel > 0) {
+            this.fuel -= 0.1;
+        }
+        if (this.fuel < 0 && this.fuel > -1) {
+            this.emptyTank();
+        }
     }
 
 });

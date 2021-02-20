@@ -164,73 +164,76 @@ function drawLines(graphics) {
 
 
 function update(time, delta) {
-    if (cursors.left.isDown) {
-        plane.x -= speed * delta;
-        angle = 270;
-        plane.consumeFuel();
-    }
-    else if (cursors.right.isDown) {
-        plane.x += speed * delta;
-        angle = 90;
-        plane.consumeFuel();
-    }
-    if (cursors.up.isDown) {
-        plane.y -= speed * delta;
-        angle = 0;
-        plane.consumeFuel();
-    }
-    else if (cursors.down.isDown) {
-        plane.y += speed * delta;
-        angle = 180;
-        plane.consumeFuel();
-    }
-    if (cursors.left.isDown && cursors.up.isDown) {
-        erraseBullets = true;
-        angle = 315;
-        plane.consumeFuel();
-    }
-    if (cursors.left.isDown && cursors.down.isDown) {
-        erraseBullets = true;
-        angle = 225;
-        plane.consumeFuel();
-    }
-    if (cursors.right.isDown && cursors.down.isDown) {
-        erraseBullets = true;
-        angle = 135;
-        plane.consumeFuel();
-    }
-    if (cursors.right.isDown && cursors.up.isDown) {
-        erraseBullets = true;
-        angle = 45;
-        plane.consumeFuel();
-    }
-
-    if (angle != -1) {
-        plane.angle = angle;
-    }
-    if (cursors.space.isDown && time > lastFired && plane.scene) {
-        switch (angle) {
-            case 0:
-            case 90:
-            case 180:
-            case 270:
-                erraseBullets = false;
-                plane.fire(time);
-                break;
+    if (plane.scene) {
+        if (cursors.left.isDown) {
+            plane.x -= speed * delta;
+            angle = 270;
+            plane.consumeFuel();
+        }
+        else if (cursors.right.isDown) {
+            plane.x += speed * delta;
+            angle = 90;
+            plane.consumeFuel();
+        }
+        if (cursors.up.isDown) {
+            plane.y -= speed * delta;
+            angle = 0;
+            plane.consumeFuel();
+        }
+        else if (cursors.down.isDown) {
+            plane.y += speed * delta;
+            angle = 180;
+            plane.consumeFuel();
+        }
+        if (cursors.left.isDown && cursors.up.isDown) {
+            erraseBullets = true;
+            angle = 315;
+            plane.consumeFuel();
+        }
+        if (cursors.left.isDown && cursors.down.isDown) {
+            erraseBullets = true;
+            angle = 225;
+            plane.consumeFuel();
+        }
+        if (cursors.right.isDown && cursors.down.isDown) {
+            erraseBullets = true;
+            angle = 135;
+            plane.consumeFuel();
+        }
+        if (cursors.right.isDown && cursors.up.isDown) {
+            erraseBullets = true;
+            angle = 45;
+            plane.consumeFuel();
         }
 
-    }
-    if (keyCtrl.isDown) {
-        bombPlane.setVisible(true);
-        if (bombPlane) {
-            console.log("ntra");
-            bombPlane.setScale(0.1);
-            var size = plane.height;
-            var position = plane.y;
-            reach = (position - size)
-            bombPlane.fire(plane.x, plane.y);
+        if (angle != -1) {
+            plane.angle = angle;
+        }
+        if (cursors.space.isDown && time > lastFired && plane.scene) {
+            switch (angle) {
+                case 0:
+                case 90:
+                case 180:
+                case 270:
+                    erraseBullets = false;
+                    plane.fire(time);
+                    break;
+            }
+
+        }
+        if (keyCtrl.isDown) {
+            bombPlane.setVisible(true);
+            if (bombPlane) {
+                console.log("ntra");
+                bombPlane.setScale(0.1);
+                var size = plane.height;
+                var position = plane.y;
+                reach = (position - size)
+                bombPlane.fire(plane.x, plane.y);
+            }
         }
     }
+
     if (time > this.nextEnemy) {
         var enemy = enemies.get();
         if (enemy) {
