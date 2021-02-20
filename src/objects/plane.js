@@ -17,6 +17,7 @@ var Plane = new Phaser.Class({
             this.fuel = 100;
             this.hp = 100;
             this.conBomba = true;
+            this.black = null;
         },
     place: function (i, j) {
         this.y = i;
@@ -74,7 +75,7 @@ var Plane = new Phaser.Class({
     },
     consumeFuel: function () {
         if (this.fuel > 0) {
-            this.fuel -= 0.1;
+            //this.fuel -= 0.1;
         }
         if (this.fuel < 0 && this.fuel > -1) {
             this.emptyTank();
