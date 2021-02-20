@@ -8,42 +8,77 @@ var Bullet = new Phaser.Class({
     {
         Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
 
-         this.speed = Phaser.Math.GetSpeed(400, 1);
+        this.incX = 0;
+        this.incY = 0;
+        this.speed = Phaser.Math.GetSpeed(400, 1);
     },
 
     fire: function (x, y, angle)
     {
-        this.setPosition(x, y - 20);
+        if(angle == 90)
+        {
+            this.setPosition(x + 20, y);
+            this.angle=angle;
+        }
+        else if(angle == 270)
+        {
+            this.setPosition(x - 20, y);
+            this.angle=angle;
 
+        }
+        else if(angle == 180)
+        {
+            console.log(y + 20);
+            this.setPosition(x, y + 20);
+        }
+        else if(angle == 0)
+        {
+            this.setPosition(x, y - 20);
+        }
          this.setActive(true);
-         this.setVisible(true);
-
-         this.setRotation(angle);
-
-            this.dx = Math.cos(angle);
-            this.dy = Math.sin(angle);
-    
+         this.setVisible(true);   
     },
 
     update: function (time, delta)
     {
-        this.y -= this.speed * delta;
-        if (this.y < reach)
+        if(erraseBullets)
         {
             this.destroy();
-            //this.setVisible(false);
         }
-
-        // this.lifespan -= delta;
-
-        // this.x += this.dx * (this.speed * delta);
-        // this.y += this.dy * (this.speed * delta);
-
-        // if (this.lifespan <= 0)
-        // {
-        //     this.setActive(false);
-        //     this.setVisible(false);
-        // }
+        if(angle == 90)
+        {
+            this.x += this.speed * delta;
+            if (this.x > reach)
+            {
+                this.destroy();
+            }
+            
+        }
+        else if(angle == 270)
+        {
+            this.x -= this.speed * delta;
+            
+             if (this.x < reach)
+             {
+                 this.destroy();
+             }
+        }
+        else if(angle == 180)
+        {
+            this.y += this.speed * delta;
+            if (this.y > reach)
+            {
+                this.destroy();
+            }
+        }
+        else if(angle == 0)
+        {
+            this.y -= this.speed * delta;
+            if (this.y < reach)
+            {
+                this.destroy();
+            }
+        }
     }
 
 });
