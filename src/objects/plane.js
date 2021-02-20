@@ -17,6 +17,7 @@ var Plane = new Phaser.Class({
         Phaser.GameObjects.Image.call(this, scene, 0, 0, 'sprites', 'plane');
 
         this.hp = 100;
+        this.conBomba = true;
     },
     place: function(i, j) {            
         this.y = i ;
