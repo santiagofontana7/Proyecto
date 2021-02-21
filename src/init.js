@@ -38,7 +38,6 @@ var tower;
 var fuel;
 var hangar;
 var bombs;
-var bombPlane;
 var keyCtrl;
 var erraseBullets = false;
 var up = false, down = false, right = false, left = false, angle = 90;
@@ -100,9 +99,7 @@ function create() {
     bulletsTurret = this.physics.add.group({ classType: BulletTorret, runChildUpdate: true });
 
     bombs = this.physics.add.group({ classType: Bomb, runChildUpdate: true });
-    bombPlane = bombs.get();
-    bombPlane.setVisible(false);
-
+    
 
     var towers = this.physics.add.group({ classType: Tower, runChildUpdate: true });
     tower = towers.get();
@@ -130,6 +127,9 @@ function create() {
     this.physics.add.overlap(enemies, bullets, damageEnemy);
     this.physics.add.overlap(bulletsTurret, plane, torretPlane);
     this.physics.add.overlap(bombs, hangars, explosionHangar);
+    this.physics.add.overlap(bombs,fuels,explosionFuel);
+    this.physics.add.overlap(bombs,towers,explosionTower);
+    
 
     cursors = this.input.keyboard.createCursorKeys();
     placeTurret(75, 850);
@@ -233,17 +233,16 @@ function update(time, delta) {
             }
 
         }
-        if (keyCtrl.isDown) {
-            bombPlane.setVisible(true);
-            if (bombPlane) {
-                bombPlane.setScale(0.1);
+        if (keyCtrl.isDown && plane.active) {
+            if (plane.conBomba) {
                 var size = plane.height;
                 var position = plane.y;
                 reach = (position - size)
-                bombPlane.fire(plane.x, plane.y);
+                plane.fireBomb(plane.x, plane.y);
             }
         }
     }
+}
 
     // if (time > this.nextEnemy) {
     //     var enemy = enemies.get();
@@ -255,4 +254,3 @@ function update(time, delta) {
     //         this.nextEnemy = time + 2000;
     //     }
     // }
-}

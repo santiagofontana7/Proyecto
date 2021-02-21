@@ -15,7 +15,7 @@ var Plane = new Phaser.Class({
         function Plane(scene) {
             Phaser.GameObjects.Image.call(this, scene, 0, 0, 'sprites', 'plane');
             this.fuel = 100;
-            this.hp = 100;
+            this.hp = 1000;
             this.conBomba = true;
             this.black = null;
         },
@@ -61,6 +61,21 @@ var Plane = new Phaser.Class({
 
             lastFired = time + 150;
         }
+    },
+
+    fireBomb: function () {
+        var planeBomb = bombs.get();
+        planeBomb.setScale(0.1);
+        planeBomb.setRotation(90);
+        if (planeBomb) {
+            if (angle == -1) { angle = 0; }
+            if (angle == 90) {
+                reach = (plane.x + plane.height)
+            }
+            planeBomb.fire(plane.x, plane.y, angle);
+        }
+        plane.conBomba = false;
+
     },
     receiveDamage: function (damage) {
         this.hp -= damage;
