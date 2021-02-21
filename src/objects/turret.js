@@ -20,7 +20,7 @@ var Turret = new Phaser.Class({
             if (plane.scene) {
                 var angle = Phaser.Math.Angle.Between(this.x, this.y, plane.x, plane.y);
                 if (Phaser.Math.Distance.Between(this.x, this.y, plane.x, plane.y) < 200) {
-                    addBulletTorret(this.x, this.y, angle);
+                    //addBulletTorret(this.x, this.y, angle);
                 }
 
                 this.angle = (angle + Math.PI / 2) * Phaser.Math.RAD_TO_DEG;

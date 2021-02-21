@@ -7,9 +7,6 @@ var config = {
     physics: {
         default: "arcade",
         arcade: {
-            /*gravity: {
-                y:500
-            }*/
         }
     },
     scene: {
@@ -21,29 +18,6 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
-
-var path;
-var turrets;
-var enemies;
-var bullets;
-var bulletsTurret;
-var plane;
-var speed;
-var cursors;
-var lastFired = 0;
-var reach;
-var enemies;
-var collision;
-var tower;
-var fuel;
-var hangar;
-var bombs;
-var keyCtrl;
-var erraseBullets = false;
-var up = false, down = false, right = false, left = false, angle = 90;
-var blacks;
-var matrizBlac = new Array(40);
-
 
 var ENEMY_SPEED = 1 / 10000;
 
@@ -68,6 +42,12 @@ function create() {
 
     //capturar tecla control
     keyCtrl = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);
+    keyOne = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE);
+    keyTwo = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO);
+    keyThree = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE);
+    keyFour = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR);
+    keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+    keyShift = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
 
     var graphics = this.add.graphics();
     path = this.add.path(200, 0);
@@ -75,19 +55,15 @@ function create() {
 
 
     graphics.lineStyle(3, 0xffffff, 1);
-    // visualize the path
     path.draw(graphics);
 
     var graphics = this.add.graphics();
 
-    // the path for our enemies
-    // parameters are the start x and y of our path
     path = this.add.path(800, 0);
     path.lineTo(800, 600);
 
 
     graphics.lineStyle(3, 0xffffff, 1);
-    // visualize the path
     path.draw(graphics);
 
     enemies = this.physics.add.group({ classType: Enemy, runChildUpdate: true });
@@ -99,7 +75,7 @@ function create() {
     bulletsTurret = this.physics.add.group({ classType: BulletTorret, runChildUpdate: true });
 
     bombs = this.physics.add.group({ classType: Bomb, runChildUpdate: true });
-    
+
 
     var towers = this.physics.add.group({ classType: Tower, runChildUpdate: true });
     tower = towers.get();
@@ -113,47 +89,29 @@ function create() {
     hangar = hangars.get();
     hangar.place(450, 930);
 
-    var myPlane = this.physics.add.group({ classType: Plane, runChildUpdate: true });
-    plane = myPlane.get();
-    plane.place(370, 50);
-    var largo = 50;
-    var ancho = largo * plane.height / plane.width;
-    plane.displayWidth = largo;
-    plane.displayHeight = ancho;
-    plane.angle = angle;
-
+    planes = this.physics.add.group({ classType: Plane, runChildUpdate: true });
     this.nextEnemy = 0;
 
     this.physics.add.overlap(enemies, bullets, damageEnemy);
-    this.physics.add.overlap(bulletsTurret, plane, torretPlane);
+
     this.physics.add.overlap(bombs, hangars, explosionHangar);
-    this.physics.add.overlap(bombs,fuels,explosionFuel);
-    this.physics.add.overlap(bombs,towers,explosionTower);
-    
+    this.physics.add.overlap(bombs, fuels, explosionFuel);
+    this.physics.add.overlap(bombs, towers, explosionTower);
 
     cursors = this.input.keyboard.createCursorKeys();
     placeTurret(75, 850);
     placeTurret(300, 850);
     placeTurret(450, 850);
 
-    speed = Phaser.Math.GetSpeed(100, 1);
-
     blacks = this.physics.add.group({ classType: Black, runChildUpdate: true });
-    var black;
-    var x = 250, y = 50;
-    for (i = 0; i <8; i++) {
-        y = 50;
-        for (j = 0; j < 6; j++) {
-            black = blacks.get();
-            black.displayHeight = 102;
-            black.displayWidth = 102;
-            placeBlack(black, y, x);
-            y += 100;
-        }
-        x += 100;
-    }
+    //placeBlacks();
 
-    this.physics.add.overlap(plane, blacks, exploreMap);
+    placePlane(300, 50, 1, this, ANGLE_90);
+    placePlane(200, 50, 2, this, ANGLE_90);
+    placePlane(100, 50, 3, this, ANGLE_90);
+    placePlane(400, 50, 4, this, ANGLE_90);
+
+
 }
 
 function drawLines(graphics) {
@@ -169,88 +127,117 @@ function drawLines(graphics) {
     graphics.strokePath();
 }
 
-
-
 function update(time, delta) {
-    if (plane.scene) {
-        if(plane.x < 200)
-        {
-            plane.black = null;
-        }
-        if (cursors.left.isDown) {
-            plane.x -= speed * delta;
-            angle = 270;
-            plane.consumeFuel();
-        }
-        else if (cursors.right.isDown) {
-            plane.x += speed * delta;
-            angle = 90;
-            plane.consumeFuel();
-        }
-        if (cursors.up.isDown) {
-            plane.y -= speed * delta;
-            angle = 0;
-            plane.consumeFuel();
-        }
-        else if (cursors.down.isDown) {
-            plane.y += speed * delta;
-            angle = 180;
-            plane.consumeFuel();
-        }
-        if (cursors.left.isDown && cursors.up.isDown) {
-            erraseBullets = true;
-            angle = 315;
-            plane.consumeFuel();
-        }
-        if (cursors.left.isDown && cursors.down.isDown) {
-            erraseBullets = true;
-            angle = 225;
-            plane.consumeFuel();
-        }
-        if (cursors.right.isDown && cursors.down.isDown) {
-            erraseBullets = true;
-            angle = 135;
-            plane.consumeFuel();
-        }
-        if (cursors.right.isDown && cursors.up.isDown) {
-            erraseBullets = true;
-            angle = 45;
-            plane.consumeFuel();
+    if (Phaser.Input.Keyboard.JustDown(keyOne)) {
+        if (planeOne.scene) {
+            selectPlane(planeOne);
         }
 
-        if (angle != -1) {
-            plane.angle = angle;
+    }
+    else if (Phaser.Input.Keyboard.JustDown(keyTwo)) {
+        if (planeTwo.scene) {
+            selectPlane(planeTwo);
         }
-        if (cursors.space.isDown && time > lastFired && plane.scene) {
-            switch (angle) {
-                case 0:
-                case 90:
-                case 180:
-                case 270:
-                    erraseBullets = false;
-                    plane.fire(time);
-                    break;
+    }
+    else if (Phaser.Input.Keyboard.JustDown(keyThree)) {
+        if (planeThree.scene) {
+            selectPlane(planeThree);
+        }
+    }
+    else if (Phaser.Input.Keyboard.JustDown(keyFour)) {
+        if (planeFour.scene) {
+            selectPlane(planeFour);
+        }
+    }
+
+    if (plane != null) {
+        if (plane.scene) {
+            if (Phaser.Input.Keyboard.JustDown(keyF)) {
+                if(plane.flying){
+                    plane.land();
+                }
+                else
+                {
+                    plane.takeOff();
+                }
+            }
+            if (Phaser.Input.Keyboard.JustDown(keyShift)) {
+                plane.highFly = !plane.highFly;
+                highFlyPlane(plane);
             }
 
-        }
-        if (keyCtrl.isDown && plane.active) {
-            if (plane.conBomba) {
-                var size = plane.height;
-                var position = plane.y;
-                reach = (position - size)
-                plane.fireBomb(plane.x, plane.y);
+            //Si el avion se encuentra dentro de su zona, limpia todo el mapa
+            if (plane.x < SAFE_ZONE_X) {
+                plane.black = null;
+            }
+            if (cursors.left.isDown) {
+                plane.fly(true, ANGLE_270, MINUS_X, false, delta);
+            }
+            else if (cursors.right.isDown) {
+                plane.fly(true, ANGLE_90, MORE_X, false, delta);
+            }
+            if (cursors.up.isDown) {
+                plane.fly(true, ANGLE_0, MINUS_Y, false, delta);
+            }
+            else if (cursors.down.isDown) {
+                plane.fly(true, ANGLE_180, MORE_Y, false, delta);
+            }
+            if (cursors.left.isDown && cursors.up.isDown) {
+                plane.fly(false, ANGLE_315, null, true, null);
+            }
+            if (cursors.left.isDown && cursors.down.isDown) {
+                plane.fly(false, ANGLE_225, null, true, null);
+            }
+            if (cursors.right.isDown && cursors.down.isDown) {
+                plane.fly(false, ANGLE_135, null, true, null);
+            }
+            if (cursors.right.isDown && cursors.up.isDown) {
+                plane.fly(false, ANGLE_45, null, true, null);
+            }
+            if (cursors.space.isDown && time > plane.cadency && plane.scene) {
+                if (plane.flying) {
+                    switch (plane.planeAngle) {
+                        case 0:
+                        case 90:
+                        case 180:
+                        case 270:
+                            plane.fire(time);
+                            break;
+                    }
+                }
+                else {
+                    console.log("tiene que despegar");
+                }
+
+
+            }
+            if (Phaser.Input.Keyboard.JustDown(keyCtrl)) {
+                if (plane.flying) {
+                        if (plane.withBomb) {
+                            plane.fireBomb();
+                        }
+                        else{
+                            console.log("no tiene bomba");
+                        }
+                    
+                }
+                else {
+                    console.log("tiene que despegar");
+                }
+
             }
         }
     }
+
+
+    if (time > this.nextEnemy) {
+        var enemy = enemies.get();
+        if (enemy) {
+            enemy.setActive(true);
+            enemy.setVisible(true);
+            enemy.startOnPath();
+
+            this.nextEnemy = time + 2000;
+        }
+    }
 }
-
-    // if (time > this.nextEnemy) {
-    //     var enemy = enemies.get();
-    //     if (enemy) {
-    //         enemy.setActive(true);
-    //         enemy.setVisible(true);
-    //         enemy.startOnPath();
-
-    //         this.nextEnemy = time + 2000;
-    //     }
-    // }

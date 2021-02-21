@@ -44,3 +44,21 @@ function exploreMap(plane, black) {
         plane.black = black;
     }
 }
+
+function placeBlacks()
+{
+    var black;
+    console.log(black);
+    var x = 250, y = 50;
+    for (i = 0; i < 8; i++) {
+        y = 50;
+        for (j = 0; j < 6; j++) {
+            black = blacks.get();
+            black.displayHeight = 102;
+            black.displayWidth = 102;
+            placeBlack(black, y, x);
+            y += 100;
+        }
+        x += 100;
+    }
+}
