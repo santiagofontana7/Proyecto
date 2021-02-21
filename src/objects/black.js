@@ -11,11 +11,14 @@ var Black = new Phaser.Class({
 
 
     update: function (time, delta) {
-        if (plane.black == null || (plane.black.x != this.x || plane.black.y != this.y)) {
+        if (plane != null) {
+            if (plane.black == null || (plane.black.x != this.x || plane.black.y != this.y)) {
 
-            this.setVisible(true);
+                this.setVisible(true);
 
+            }
         }
+
 
     }
     ,
